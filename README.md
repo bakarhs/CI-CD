@@ -136,4 +136,14 @@ https://github.com/bakarhs/SSH-keys
 
 - Now if we go to git hub we can take the IP from our Jenkins project and `http://<ip>//github-webhook/` to our Repo's webhook section so that whenever we change something locally in our repo it will be sent to GitHub then after that to Jenkins
 
+## Plan to go from CI to CI/CD
+
+- Create a dev branch `git checkout -b "dev"`
+-Job 1: Run a job on jenkins testing the app in your dev branch
+- Job 2: Automate it, so that if the test is successful, the dev branch is merged with your main branch
+- Job 3: Automate it so that if the branches are merged successfully, the main branch is sent to an EC2 instance
+- Before doing job 3, you will need to create an EC2 instance
+Jenkins will need to ssh into EC2 in your place : make sure you allow the Jenkins IP in your EC2 security group
+- For job 3, you will also need to make sure that Jenkins has the appropriate permissions to access the EC2 instance -> namely the correct key. Make sure you use the .pem file during job 3
+
 
