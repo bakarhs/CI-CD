@@ -81,3 +81,45 @@ Some popular alternatives to Jenkins include:
 These tools offer similar functionalities to Jenkins and can be used to automate the process of building, testing, and deploying software applications. The choice of tool will depend on the specific needs and requirements of the development team.
 
 ![img_2.png](img_2.png)
+
+# Building our app through Jenkins
+
+## Step 1 : Generate SSH keypair in .ssh folder
+
+https://github.com/bakarhs/SSH-keys
+
+## Step 2 : Copy the .pub version of your key into GitHub repo
+
+![img_5.png](img_5.png)
+
+- You want to use the setting tab within your repo and not on your actual GitHub account 
+
+![img_6.png](img_6.png)
+
+- You can now use `Deploys Keys` to set up your SSH key as you usually would
+
+## Step 3 : Set up your job on Jenkins
+ 
+- We want to start by signing in to Jenkins and starting a new project (we are going to make this a freestyle project)
+
+![img_7.png](img_7.png)
+
+- You want to make sure to give a good description of all things done in this project
+- Make sure to create a log rotation of only 3 (we don't want to save all versions of the project as this will take up too much space)
+- You can also check on GitHub projects and in this section you want to put the HHTP of your GitHub Repo.
+
+![img_8.png](img_8.png)
+
+- The next stage is to apply node plugin add in our GitHub key, and change to the main branch (You want to make sure you add the SSH URL for our Repo when registering our key ) 
+
+![img_9.png](img_9.png)
+
+- When inputting the KEY you need to speccify it name and type before copying in the contents of our private key 
+
+![img_10.png](img_10.png)
+
+- Before saving we want to provision it with node and let the shell know where to install and test this
+
+- Now we are ready to test our app
+
+
