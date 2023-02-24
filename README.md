@@ -122,4 +122,18 @@ https://github.com/bakarhs/SSH-keys
 
 - Now we are ready to test our app
 
+## Adding in a webhook
+
+![img_11.png](img_11.png)
+
+- Within our projects' configuration we want to add this setting on build triggers
+
+![img_12.png](img_12.png)
+
+![img_13.png](img_13.png)
+
+![img_14.png](img_14.png)
+
+- Now if we go to git hub we can take the IP from our Jenkins project and `http://<ip>//github-webhook/` to our Repo's webhook section so that whenever we change something locally in our repo it will be sent to GitHub then after that to Jenkins
+
 
