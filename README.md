@@ -84,6 +84,29 @@ These tools offer similar functionalities to Jenkins and can be used to automate
 
 # Building our app through Jenkins
 
+![img_15.png](img_15.png)
+
+Job1:
+
+- The aim of job 1 is to create a text job in order to make sure all our tests are running correctly.
+- After we know that the tests are working we need to create a dev brange and insure that the tests will be ran on this branch
+- Create a dev branch `git checkout -b "dev"`
+
+Job 2:
+
+- Automate it, so that if the test is successful, the dev branch is merged with your main branch (it needs to be triggered as soon as job 1 is successful)
+- If this is successful it needs to now trigger job 3
+
+Job 3:
+- Automate it so that if the branches are merged successfully, the main branch is sent to an EC2 instance
+
+- Before doing job 3, you will need to create an EC2 instance
+Jenkins will need to ssh into EC2 in your place (make sure you allow the Jenkins IP in your EC2 security group)
+- For job 3, you will also need to make sure that Jenkins has the appropriate permissions to access the EC2 instance -> namely the correct key. Make sure you use the .pem file during job 3
+
+
+# Job 1
+
 ## Step 1 : Generate SSH keypair in .ssh folder
 
 https://github.com/bakarhs/SSH-keys
@@ -138,12 +161,64 @@ https://github.com/bakarhs/SSH-keys
 
 ## Plan to go from CI to CI/CD
 
-- Create a dev branch `git checkout -b "dev"`
--Job 1: Run a job on jenkins testing the app in your dev branch
-- Job 2: Automate it, so that if the test is successful, the dev branch is merged with your main branch
-- Job 3: Automate it so that if the branches are merged successfully, the main branch is sent to an EC2 instance
+# Job 2
+
+- We want to now create a dev branch by using `git checkout -b "dev"` - make sure to check on git hub that all the items in the main branch are also in the dev branch
+- we now need to change some configurations in our Job such as the branch to build section:
+
+![img_16.png](img_16.png)
+
+- The next step is to create a new project for our merger of branches and configure it correctly:
+- Firstly in the second job we `DO NOT` need to Restrict where this project can be run ( Office 265 Connector)
+- We want to add a build trigger and specifier the first job 
+
+![img_17.png](img_17.png)
+
+- We want to add some `Post -build Actions`:
+
+![img_18.png](img_18.png)
+
+- Apart from these changes everything else should stay identical
+
+# Job 3
+
 - Before doing job 3, you will need to create an EC2 instance
-Jenkins will need to ssh into EC2 in your place : make sure you allow the Jenkins IP in your EC2 security group
+Jenkins will need to ssh into EC2 in your place (make sure you allow the Jenkins IP in your EC2 security group)
+
+![img_19.png](img_19.png)
+
+
 - For job 3, you will also need to make sure that Jenkins has the appropriate permissions to access the EC2 instance -> namely the correct key. Make sure you use the .pem file during job 3
+
+- Similar to job 2 we don't want to do anything in the `Office 365 Conector`
+- In job 3 we want our `Source Code Managment` to specify the main branch again 
+
+![img_20.png](img_20.png)
+
+- Make sure that the build trigger for this job is now the second job
+
+![img_21.png](img_21.png)
+
+```
+rsync -avz -e "ssh -o StrictHostKeyChecking=no" tech201_virtualisation/app ubuntu@3.252.80.112:/home/ubuntu
+ssh -o "StrictHostKeyChecking=no" ubuntu@3.252.80.112 <<EOF
+    sudo bash ./app/provision.sh
+    cd tech201_virtualisation
+    cd app
+    npm install
+    nohup npm start 2>/dev/null 1>/dev/null&
+
+EOF
+```
+
+- We now want to add in an SSH agent that will link our Jenkins account to our AWS account 
+- We also need to now change our Execute shell to allow us to make changes in our AWS EC2 instance 
+- Now that all jobs are created we can test this by pushing a change from our local host all the way to was
+
+# NOTE
+
+- Make sure your SSH key has the correct permissions to allow job 2 to work
+- If you are not using an AMI we need to ssh and provision them manually 
+
 
 
